@@ -7,17 +7,26 @@ this file produces:
   has been recorded -> species_map.png
 - overall checklist density hexbin map for all checklists -> effort_density.png. 
 
-Usage:
-    python spatial_coverage.py path/to/ebd_GB-SCT_filtered.txt
+Filename: spatial_coverage.py
+Author: Oliver Lovatt
+Date: 20-07-2026
+AI Usage Declaration:
+- This file contains code generated with the help of AI tools.
+- Tool Used: Claude AI
+- Date Generated: 10-07-2026
+- AI-generated sections are marked with comments: # [AI-GENERATED]
+I have reviewed, tested, and understood all AI-generated code.
 """
 
 import sys
 import numpy as np
 import pandas as pd
 import matplotlib
+# [AI-GENERATED - Claude AI 10-07-2026]
 matplotlib.use("Agg")  #no GUI needed, just save a png
 import matplotlib.pyplot as plt
 
+# [STUDENT-WRITTEN]
 CHUNK_SIZE = 100_000
 
 SHORTLIST = [
@@ -35,7 +44,7 @@ SHORTLIST = [
 
 COLUMNS_NEEDED = ["COMMON NAME", "LATITUDE", "LONGITUDE"]
 
-
+# [STUDENT-WRITTEN]
 def main(path):
     #collect every lat/lon value
     #for species in shortlist create a key mapping to lat & lon 
@@ -56,6 +65,7 @@ def main(path):
         low_memory = False,
     )
 
+    # [STUDENT-WRITTEN]
     for i, chunk in enumerate(reader):
         total_rows += len(chunk)
 
@@ -82,11 +92,13 @@ def main(path):
 
     print(f"\nTOTAL ROWS: {total_rows:,}\n")
 
+    # [AI-GENERATED - Claude AI 10-07-2026]
     #Per-species bounding box / centroid stats
     print("SHORTLIST SPECIES: SPATIAL SUMMARY")
     print(f"{'Species':<20}{'N':>8}{'Lat min':>10}{'Lat max':>10}"
           f"{'Lon min':>10}{'Lon max':>10}{'Centroid':>20}")
     
+    # [STUDENT-WRITTEN]
     species_arrays = {}
     #for each shortlist species, flatten into one array
     for species in SHORTLIST:
@@ -109,6 +121,7 @@ def main(path):
         print(f"{species:<20}{len(lat):>8}{lat.min():>10.2f}{lat.max():>10.2f}"
               f"{lon.min():>10.2f}{lon.max():>10.2f}{centroid:>20}")
 
+    # [STUDENT-WRITTEN]
     #plot 1 -species scatter map
     #create figure and axis
     fig, ax = plt.subplots(figsize = (9, 12))
@@ -122,7 +135,7 @@ def main(path):
         ax.scatter(lon, lat, s = 4, alpha = 0.4, label = species, color = cmap(idx % 10))
         #color = cmap(idx % 10)) is just a futreproofing method if there are ever more than 10 species
         
-    
+    # [AI-GENERATED - Claude AI 10-07-2026]
     ax.set_title("Shortlisted species - recorded locations (Scotland EBD, 2010-2026)")
     ax.set_xlabel("Longitude")
     ax.set_ylabel("Latitude")
@@ -132,6 +145,7 @@ def main(path):
     fig.savefig("species_map.png", dpi = 150)#resolution
     print("\nSaved species_map.png")
 
+    # [AI-GENERATED - Claude AI 10-07-2026]
     #plot 2 - overall checklist effort density
     #hexbin = hexagonal cells
     fig2, ax2 = plt.subplots(figsize = (9, 12))
@@ -146,7 +160,7 @@ def main(path):
     fig2.savefig("effort_density.png", dpi = 150)
     print("Saved effort_density.png")
 
-
+# [AI-GENERATED - Claude AI 10-07-2026]
 if __name__ == "__main__":
     if len(sys.argv) != 2:
         print("Usage: python spatial_coverage.py path/to/ebd_GB-SCT_filtered.txt")

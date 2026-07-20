@@ -6,13 +6,22 @@ eBird EBD species-level coverage
 - Spatial spread per species 
 - focused look at shortlisted species specifically
 
-Usage:
-    python species_coverage.py path/to/ebd_GB-SCT_filtered.txt
+Filename: species_coverage.py
+Author: Oliver Lovatt
+Date: 20-07-2026
+AI Usage Declaration:
+- This file contains code generated with the help of AI tools.
+- Tool Used: Claude AI
+- Date Generated: 09-07-2026
+- AI-generated sections are marked with comments: # [AI-GENERATED]
+I have reviewed, tested, and understood all AI-generated code.
+
 """
 
 import sys
 import pandas as pd
 
+# [STUDENT-WRITTEN]
 CHUNK_SIZE = 100_000
 
 #Golden Eagle, Western Capercaillie and corncrake dropped
@@ -37,7 +46,7 @@ COLUMNS_NEEDED = [
     "SAMPLING EVENT IDENTIFIER",
 ]
 
-
+# [STUDENT-WRITTEN]
 def main(path):
     checklist_counts = pd.Series(dtype="int64") #per species
     #dictionaries start empty
@@ -57,6 +66,7 @@ def main(path):
         low_memory = False,
     )
 
+    # [STUDENT-WRITTEN]
     for i, chunk in enumerate(reader):
         total_rows += len(chunk)
 
@@ -84,6 +94,7 @@ def main(path):
     checklist_counts = checklist_counts.sort_values(ascending = False)
     n_species = len(checklist_counts) #number of distinct species
 
+    # [AI-GENERATED - Claude AI 09-07-2026]
     print(f"\nTOTAL ROWS: {total_rows:,}")
     print(f"DISTINCT SPECIES: {n_species:,}\n")
 
@@ -98,7 +109,7 @@ def main(path):
     print("\nBOTTOM 20 LEAST-RECORDED SPECIES")
     print(checklist_counts.tail(20).to_string())
 
-
+    # [AI-GENERATED - Claude AI 09-07-2026]
     #sort species checklist count into buckets
     print("\nDISTRIBUTION BUCKETS (species count by checklist volume)")
     bins = [0, 10, 50, 100, 500, 1000, 5000, 10000, float("inf")] #(infinity)
@@ -110,15 +121,17 @@ def main(path):
     print("\nSHORTLIST SPECIES: DETAILED COVERAGE")
     print("Species", "Checklists", "Counties", "Localities", sep = "\t")
 
+    # [STUDENT-WRITTEN]
     #loop through species shortlist specifically
     for species in SHORTLIST:
         n_checklists = int(checklist_counts.get(species, 0))#get this species count, or 0
         n_counties = len(county_sets.get(species, set()))#default to empty set
         n_localities = len(locality_sets.get(species, set()))
+        # [AI-GENERATED - Claude AI 09-07-2026]
         flag = "  <-- LOW" if n_checklists < 100 else "" #flag for sparse/empty species
         print(species, n_checklists, n_counties, n_localities, flag, sep = "\t")
 
-
+# [AI-GENERATED - Claude AI 09-07-2026]
 if __name__ == "__main__":
     if len(sys.argv) != 2:
         print("Usage: python species_coverage.py path/to/ebd_GB-SCT_filtered.txt")

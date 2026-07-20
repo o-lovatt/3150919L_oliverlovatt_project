@@ -8,11 +8,24 @@ Apply four filtering conditions to produce checklist dataset for the bird migrat
     - LATITUDE/LONGITUDE within Scotland bounding box 
 
 writes a filtered .txt with the same column structure
+
+Filename: filter_edb.py
+Author: Oliver Lovatt
+Date: 20-07-2026
+AI Usage Declaration:
+- This file contains code generated with the help of AI tools.
+- Tool Used: Claude AI
+- Date Generated: 03-07-2026
+- AI-generated sections are marked with comments: # [AI-GENERATED]
+I have reviewed, tested, and understood all AI-generated code.
+
 """
 
 import sys
 import pandas as pd
 
+
+# [STUDENT-WRITTEN]
 CHUNK_SIZE = 100_000
 
 STANDARD_PROTOCOLS = {"Traveling", "Stationary"}
@@ -63,6 +76,7 @@ def main(in_path, out_path):
         filtered = chunk[mask]
         total_rows_out += len(filtered)
 
+        # [AI-GENERATED - Claude AI 03-07-2026]
         #write incrementally so memory doesn't hold more than one chunk
         #first chunk opens in write mode, chunks after are oppened in append mode
         #only write column header once
@@ -85,23 +99,25 @@ def main(in_path, out_path):
 
         if (i + 1) % 10 == 0:
             print(
-                f"...processed {total_rows_in:,} rows in, "
+                f"processed {total_rows_in:,} rows in, "
                 f"{total_rows_out:,} rows kept so far",
                 file = sys.stderr,
             )
 
+    # [STUDENT-WRITTEN]
     if total_rows_in:
          pct_kept = total_rows_out / total_rows_in * 100
     else:
          pct_kept = 0
     
+    # [AI-GENERATED - Claude AI 03-07-2026]
     #print summary
     print(f"\nDONE")
     print(f"Rows in:  {total_rows_in:,}")
     print(f"Rows out: {total_rows_out:,} ({pct_kept:.1f}% kept)")#same divide by zero fix
     print(f"Filtered file written to: {out_path}")
 
-
+# [AI-GENERATED - Claude AI 03-07-2026]
 if __name__ == "__main__":
     if len(sys.argv) != 3:
         print("Usage: python filter_ebd.py path/to/ebd_scotland.txt path/to/output_filtered.txt")

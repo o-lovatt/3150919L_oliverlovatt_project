@@ -1,11 +1,22 @@
-import sys
-import pandas as pd
-
 """
 eBird EBD column distribution inspector
 get value counts for the key columns used for filtering.
-"""
 
+Filename: inspect_distributions.py
+Author: Oliver Lovatt
+Date: 20-07-2026
+AI Usage Declaration:
+- This file contains code generated with the help of AI tools.
+- Tool Used: Claude AI
+- Date Generated: 03-07-2026
+- AI-generated sections are marked with comments: # [AI-GENERATED]
+I have reviewed, tested, and understood all AI-generated code.
+
+"""
+import sys
+import pandas as pd
+
+# [STUDENT-WRITTEN]
 CHUNK_SIZE = 100_000 #CONSTANT, how many rows read to memory at once 
 
 #columns needed for filtering decision
@@ -22,7 +33,7 @@ COLUMNS_OF_INTEREST = [
     "NUMBER OBSERVERS",
 ]
 
-
+# [STUDENT-WRITTEN]
 def main(path):
     #function variables
     observation_type_counts = pd.Series(dtype = "int64") #hold whole numbers
@@ -38,10 +49,10 @@ def main(path):
         null_counts[col] = 0
 
 
-
+    # [STUDENT-WRITTEN]
     reader = pd.read_csv(
         path,
-        sep = "\t",
+        sep = "\t", #tab separated
         usecols = COLUMNS_OF_INTEREST, #only keep columns in our list
         chunksize = CHUNK_SIZE,
         dtype = str, #read everything as string first
@@ -49,9 +60,11 @@ def main(path):
         low_memory = False,
     )
 
+    # [AI-GENERATED - Claude AI 03-07-2026]
     for i, chunk in enumerate(reader): #loop over reader
         total_rows += len(chunk)
 
+        # [STUDENT-WRITTEN]
         if "OBSERVATION TYPE" in chunk:
             #count how many times unique values appear
             #include missing values
@@ -98,11 +111,12 @@ def main(path):
                 #give count of missing values
                 null_counts[col] += chunk[col].isna().sum()
                 
-
+        # [AI-GENERATED - Claude AI 03-07-2026]
         if (i + 1) % 10 == 0:
             print(f"processed {total_rows:,} rows so far")
         #for better output formatting
 
+    # [AI-GENERATED - Claude AI 03-07-2026]
     #print everything
     print(f"\nTOTAL ROWS: {total_rows:,}\n")
 
@@ -125,15 +139,20 @@ def main(path):
     print(breeding_category_counts.sort_values(ascending=False).to_string())
 
     print("\nNULL COUNTS (per column of interest)")
+
+    # [STUDENT-WRITTEN]
     for col, count in null_counts.items():
         if total_rows:
             pct = (count / total_rows * 100)
         else:
             pct = 0
+            
         #if total_rows = 0, stop divide by 0 crash
+        # [AI-GENERATED - Claude AI 03-07-2026]
         print(f"{col}: {count:,} nulls ({pct:.1f}%)") #format number to 1 decimal place
 
 
+# [AI-GENERATED - Claude AI 03-07-2026]
 if __name__ == "__main__":
     if len(sys.argv) != 2:
         print("Usage: python inspect_distributions.py path/to/ebd_scotland.txt")
