@@ -2,3 +2,7 @@
 !README.md
 __pycache__/
 *.png
+*/settings.py
+*.pyc
+.env
+db.sqlite3
