@@ -7,6 +7,7 @@ import { useEffect } from 'react';
 import { usePredictions } from './hooks/usePredictions'
 import { getPredictionsForLocation } from './utils/getPredictionsForLocation'
 import LocationPredictions from './components/LocationPredictions'
+import SpeciesMap from './components/SpeciesMap'
 
 // [STUDENT-WRITTEN]
 //test userLocation + prediction
@@ -15,6 +16,7 @@ function App() {
   return (
     <div>
       <LocationPredictions />
+      <SpeciesMap />
     </div>
   )
 }
