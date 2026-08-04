@@ -10,61 +10,32 @@ import LocationPredictions from './components/LocationPredictions'
 import SpeciesMap from './components/SpeciesMap'
 
 // [STUDENT-WRITTEN]
-//test userLocation + prediction
-
 function App() {
+  //refactored, now only called once
+  const { predictions, loading } = usePredictions()
+
+  //track with view is active
+  const [activeTab, setActiveTab] = useState("location")
+
+  //navigation tabs
   return (
     <div>
-      <LocationPredictions />
-      <SpeciesMap />
+      <button onClick={() => setActiveTab("location")} aria-label = "Find nearby birds based on your location">
+        Location
+      </button>
+      <button onClick={() => setActiveTab("species")} aria-label = "Find sighting locations based on a specific species">
+        Species
+      </button>
+
+      {activeTab === "location" ? (
+        <LocationPredictions predictions = {predictions} />
+      ) : (
+      <SpeciesMap predictions = {predictions} />
+      )}
     </div>
   )
 }
 
-
-// // [STUDENT-WRITTEN]
-// //test cached 
-// function App() {
-//   const { predictions, loading } = usePredictions()
-//   return (
-//     <div>
-//       {predictions ? <p>{JSON.stringify(predictions)}</p> : <p>Nothing cached yet</p>}
-//     </div>
-//   )
-// }
-
-// // [STUDENT-WRITTEN]
-// //test api.js and cache.js
-
-// function App() {
-//   const [version, setVersion] = useState(null)
-
-//   useEffect(() => {
-//     async function returnVersion() {
-//       const data = await fetchPredictions();
-//       setVersion(data);
-//     }
-//     returnVersion()
-//   }, []);
-
-//   useEffect(() => {
-//     async function testCache() {
-//           const before = await shouldRefresh();
-//           console.log("should refresh (before caching anything):", before);
-
-//           await savePredictionsToCache(["test"], { generated_at: new Date().toISOString(), row_count: 1 });
-
-//           const after = await shouldRefresh();
-//           console.log("should refresh (right after caching):", after);
-//       }
-//       testCache()
-//   }, []);
-
-//   return (
-//     <div>
-//       {version ? <p>{JSON.stringify(version)}</p> : <p>Loading...</p>}
-//     </div>
-//   )
-// }
+//removed old test blocks
 
 export default App

@@ -1,29 +1,20 @@
 import { useState } from 'react'
 import { MapContainer, TileLayer, CircleMarker, Popup } from 'react-leaflet'
 import 'leaflet/dist/leaflet.css'
-import { usePredictions } from '../hooks/usePredictions'
 import { getLocationsForSpecies } from '../utils/getLocationsForSpecies'
 import { useMap } from 'react-leaflet'
 import { useEffect } from 'react'
+import { getMarkerStyle } from '../utils/markerStyle'
+import { MapResizer } from './MapResizer'
+import { formatLikelihood } from '../utils/formatLikelihood'
 
 const SCOTLAND_CENTER = [56.5, -4.0] //Scotlands centre point (roughly)
 const DEFAULT_ZOOM = 6
 
-//[AI-GENERATED - Claude AI 03-08-2026]
-//fix for white space filling most of the UI
-function MapResizer() {
-  const map = useMap()
-
-  useEffect(() => {
-    map.invalidateSize()
-  }, [map])
-
-  return null
-}
+// map resizer moved into it's own file MapResizer.jsx
 
 // [STUDENT-WRITTEN]
-function SpeciesMap() {
-  const { predictions } = usePredictions()
+function SpeciesMap({predictions}) {
   const [selectedSpecies, setSelectedSpecies] = useState(null)
 
   if (!predictions) {
@@ -40,55 +31,9 @@ function SpeciesMap() {
   //... expands the array into individual values
   const maxScore = results.length > 0 ? Math.max(...results.map(item => item.likelihood_score)) : 0
 
-  //DON'T LIKE THIS STYLE
-  //trying gradient based colour instead
-  // function getMarkerStyle(likelihoodScore) {
-  //   //may need to update these thresholds based on species data
-  //   // vvv
-  //   if (likelihoodScore < 0.08) {
-  //     return { radius: 6, color: "#a8a8a8" }
-  //   } else if (likelihoodScore < 0.15) {
-  //     return { radius: 10, color: "#f6ad55" }
-  //   } else {
-  //     return { radius: 14, color: "#2b6cb0" }
-  //   }
-  // }
+  // formatLikelihood moved int it's own file formatLikelihood.js
 
-  function formatLikelihood(score){
-    const percent = score * 100
-    if (percent < 1) {
-      return percent.toFixed(2) //like 0.33%
-    } else {
-      return Math.round(percent) //like 20%
-    }
-  }
-
-  //gradient colours, pale (low) -> vibrant (high)
-  //bit hard to decipher on the map? would a dif colour be better?  <--------------------------------------
-  const LOW_COLOR = {r: 219, g: 234, b: 254 } //pale
-  const HIGH_COLOR = {r: 30, g: 64, b: 175} //vibrant
-
-  function getMarkerStyle(score, maxScore) {
-    //how far is score from maxScore
-    //what if maxScore = 0 ?
-    const t = maxScore > 0 ? score / maxScore : 0
-
-    //interpolate each colour channel with t
-    const red = Math.round(LOW_COLOR.r + t * (HIGH_COLOR.r - LOW_COLOR.r))
-    const green = Math.round(LOW_COLOR.g + t * (HIGH_COLOR.g - LOW_COLOR.g))
-    const blue = Math.round(LOW_COLOR.b + t * (HIGH_COLOR.b - LOW_COLOR.b))
-
-    //build colour string
-    const color = `rgb(${red}, ${green}, ${blue})`
-
-    //scale radius using t aswell
-    const minRadius = 5
-    const maxRadius = 10
-    const radius = Math.round(minRadius + t * (maxRadius - minRadius))
-  
-    return {radius: radius, color: color}
-  }
-
+  //getMarkerStyle moved into it's own file markerStyle.js
  
   //create dropdown menu
   return (
@@ -118,6 +63,8 @@ function SpeciesMap() {
                             pathOptions={{ color: style.color }}
                           >
                             <Popup>
+                              <strong>{item.species}</strong>
+                              <br />
                               Likelihood: {formatLikelihood(item.likelihood_score)}%
                               <br />
                               Based on: {item.sample_checklists} birdwatcher checklists
@@ -130,10 +77,5 @@ function SpeciesMap() {
             </div>
           )
         }
-
         
         export default SpeciesMap
-        
-
-
-      
