@@ -1,7 +1,7 @@
 // [STUDENT-WRITTEN]
 //gradient colours, pale (low) -> vibrant (high)
 //bit hard to decipher on the map? would a dif colour be better?  <--------------------------------------
-const LOW_COLOR = {r: 219, g: 234, b: 254 } //pale
+const LOW_COLOR = {r: 189, g: 210, b: 240 } //pale
 const HIGH_COLOR = {r: 30, g: 64, b: 175} //vibrant
 
 export function getMarkerStyle(score, maxScore) {
@@ -22,5 +22,5 @@ const minRadius = 5
 const maxRadius = 10
 const radius = Math.round(minRadius + t * (maxRadius - minRadius))
 
-return {radius: radius, color: color}
+return {radius: radius, color: color, weight: 2}
 }

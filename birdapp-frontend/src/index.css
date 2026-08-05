@@ -1,5 +1,18 @@
 @import "tailwindcss";
 
+@theme {
+  --color-forest: #4A7C59;
+  --color-cream: #F5F0E8;
+  --color-bark: #6B5842;
+  --color-charcoal: #2D2D2A;
+}
+
 .leaflet-container img {
   max-width: none !important;
+}
+
+.leaflet-popup-content-wrapper {
+  color: #2D2D2A;
+  background-color: #F5F0E8;
+  border-radius: 0.5rem;
 }

@@ -18,7 +18,7 @@ function SpeciesMap({predictions}) {
   const [selectedSpecies, setSelectedSpecies] = useState(null)
 
   if (!predictions) {
-    return <p>Loading...</p>
+    return <p className="text-charcoal p-4">Loading...</p>
   }
 
   //get list of unique species names from predictions
@@ -39,7 +39,8 @@ function SpeciesMap({predictions}) {
   return (
     /* [AI-GENERATED - Claude AI 02-08-2026] */
     <div>
-        <select onChange={(e) => setSelectedSpecies(e.target.value)}>
+        <select onChange={(e) => setSelectedSpecies(e.target.value)}
+          className="px-4 py-2 rounded border border-bark bg-cream text-charcoal mb-4">
           {speciesList.map(name => (
             <option key={name} value={name}>{name}</option>
             ))}
@@ -48,7 +49,7 @@ function SpeciesMap({predictions}) {
                 <MapContainer center={SCOTLAND_CENTER} zoom={DEFAULT_ZOOM} style={{ height: '100%', width: '100%' }}>
                   <MapResizer />
                   <TileLayer
-                    url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
+                    url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
                     attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
                   />
 

@@ -19,14 +19,21 @@ function App() {
 
   //navigation tabs
   return (
-    <div>
-      <button onClick={() => setActiveTab("location")} aria-label = "Find nearby birds based on your location">
-        Location
-      </button>
-      <button onClick={() => setActiveTab("species")} aria-label = "Find sighting locations based on a specific species">
-        Species
-      </button>
-
+    <div className="min-h-screen bg-cream p-4">
+      <div className="flex gap-1 mb-1">
+        <button onClick={() => setActiveTab("location")} 
+        className={`px-4 py-2 rounded ${activeTab ==="location" ? "bg-forest text-cream" : "bg-cream text-charcoal border border-bark"}`}
+        aria-label = "Find nearby birds in your location"
+        >
+          Location
+        </button>
+        <button onClick={() => setActiveTab("species")}
+        className={`px-4 py-2 rounded ${activeTab ==="species" ? "bg-forest text-cream" : "bg-cream text-charcoal border border-bark"}`}
+        aria-label = "Find sighting locations based on a specific species"
+        >
+          Species
+        </button>
+      </div>
       {activeTab === "location" ? (
         <LocationPredictions predictions = {predictions} />
       ) : (

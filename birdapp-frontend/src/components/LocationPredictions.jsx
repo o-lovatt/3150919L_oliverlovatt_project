@@ -38,10 +38,10 @@ function LocationPredictions({predictions}) {
   //show loading if waiting for location and predictions
   //else show results
    if (locationError) {
-        return <p>Location Unavailable: {locationError.message}</p>
+        return <p className="text-bark p-4">Location Unavailable: {locationError.message}</p>
     }
     if (!predictions || !userLocation){
-      return <p>Loading...</p>
+      return <p className="text-charcoal p-4">Loading...</p>
     } 
   
   //same as SpeciesMap
@@ -58,7 +58,7 @@ function LocationPredictions({predictions}) {
         <MapContainer center={[userLocation.lat, userLocation.lon]} zoom={9} style={{ height: '100%', width: '100%' }}>
           <MapResizer />
           <TileLayer
-            url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
+            url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
           />
 
