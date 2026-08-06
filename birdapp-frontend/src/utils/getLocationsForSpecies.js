@@ -1,8 +1,5 @@
-import { getCurrentSeason } from "./season"
-
 // [STUDENT WRITTEN]
-export function getLocationsForSpecies(predicitons, speciesName){
-    const season = getCurrentSeason()
+export function getLocationsForSpecies(predicitons, speciesName, season){
 
     const matching = predicitons.filter(item => 
     (item.species === speciesName) && (item.season === season) && (item.likelihood_score > 0)

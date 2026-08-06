@@ -7,6 +7,7 @@ import { useEffect } from 'react'
 import { getMarkerStyle } from '../utils/markerStyle'
 import { MapResizer } from './MapResizer'
 import { formatLikelihood } from '../utils/formatLikelihood'
+import { getCurrentSeason, getSeason } from '../utils/season'
 
 const SCOTLAND_CENTER = [56.5, -4.0] //Scotlands centre point (roughly)
 const DEFAULT_ZOOM = 6
@@ -17,6 +18,16 @@ const DEFAULT_ZOOM = 6
 function SpeciesMap({predictions}) {
   const [selectedSpecies, setSelectedSpecies] = useState(null)
 
+  //season selection added for species view
+  const [selectedSeason, setSelectedSeason] = useState(getCurrentSeason())
+  const SEASONS = ["Spring", "Summer", "Autumn", "Winter"]
+  const SEASON_MONTHS = {
+    Spring: "March - May",
+    Summer: "June - August",
+    Autumn: "September - November",
+    Winter: "December - February",
+  }
+
   if (!predictions) {
     return <p className="text-charcoal p-4">Loading...</p>
   }
@@ -26,7 +37,7 @@ function SpeciesMap({predictions}) {
   //Set removes duplicated
   //map + [...] turns it into a normal array
 
-  const results = selectedSpecies ? getLocationsForSpecies(predictions, selectedSpecies) : []
+  const results = selectedSpecies ? getLocationsForSpecies(predictions, selectedSpecies, selectedSeason) : []
 
   //... expands the array into individual values
   const maxScore = results.length > 0 ? Math.max(...results.map(item => item.likelihood_score)) : 0
@@ -43,8 +54,22 @@ function SpeciesMap({predictions}) {
           className="px-4 py-2 rounded border border-bark bg-cream text-charcoal mb-4">
           {speciesList.map(name => (
             <option key={name} value={name}>{name}</option>
-            ))}
+          ))}
         </select>
+
+        {/* [STUDENT-WRITTEN] */}
+        <select onChange={(e) => setSelectedSeason(e.target.value)}
+          className="px-4 py-2 rounded border border-bark bg-cream test-charcoal mb-4">
+          {SEASONS.map(s => (
+            <option key={s} value={s}>{s}</option>
+          ))}
+        </select>
+          
+        <p className="text-charcoal">
+          Showing results for {selectedSeason} ({SEASON_MONTHS[selectedSeason]})
+        </p>
+          
+
         <div style={{ height: '100vh', width: '100%' }}>
                 <MapContainer center={SCOTLAND_CENTER} zoom={DEFAULT_ZOOM} style={{ height: '100%', width: '100%' }}>
                   <MapResizer />
