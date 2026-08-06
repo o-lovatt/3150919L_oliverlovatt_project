@@ -93,7 +93,7 @@ function SpeciesMap({predictions}) {
                               <br />
                               Likelihood: {formatLikelihood(item.likelihood_score)}%
                               <br />
-                              Based on: {item.sample_checklists} birdwatcher checklists
+                              Based on: {item.sample_checklists} visits here
                               </Popup>
                           </CircleMarker>
                         )

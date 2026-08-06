@@ -1,11 +1,24 @@
 import { useState, useEffect } from 'react'
 import { getPredictionsNearLocation } from '../utils/getPredictionsNearLocation'
 import { formatLikelihood } from '../utils/formatLikelihood'
-import { MapContainer, TileLayer, CircleMarker, Popup } from 'react-leaflet'
+import { MapContainer, TileLayer, CircleMarker, Popup, useMapEvents } from 'react-leaflet'
 import 'leaflet/dist/leaflet.css'
 import { getMarkerStyle } from '../utils/markerStyle'
 import { MapResizer } from './MapResizer'
 import { groupPredictionsByLocation } from '../utils/groupPredictionsByLocation'
+import L from 'leaflet'
+
+// [STUDENT-WRITTEN]
+//added functionality for user to click location on map
+function LocationClickHandler({ onLocationSelect }) {
+  useMapEvents({
+    click(e) {
+      const clickedLocation = {lat: e.latlng.lat, lon: e.latlng.lng}
+      onLocationSelect(clickedLocation)
+    },
+  })
+  return null
+}
 
 // [STUDENT-WRITTEN] - skeleton provided by Claude AI 30-07-2026
 //show the species location based on user location
@@ -56,6 +69,7 @@ function LocationPredictions({predictions}) {
     <div>
       <div style={{ height: '100vh', width: '100%' }}>
         <MapContainer center={[userLocation.lat, userLocation.lon]} zoom={9} style={{ height: '100%', width: '100%' }}>
+          <LocationClickHandler onLocationSelect={setUserLocation} />
           <MapResizer />
           <TileLayer
             url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
@@ -67,9 +81,13 @@ function LocationPredictions({predictions}) {
             center={[userLocation.lat, userLocation.lon]}
             radius={6}
             pathOptions={{ color: "red" }}
+            eventHandlers={{click: (e) => {
+              L.DomEvent.stopPropagation(e)
+            }
+          }}
             >
               <Popup>
-                Your Location
+                Selected Location
                 </Popup>
             </CircleMarker>
 
@@ -78,21 +96,28 @@ function LocationPredictions({predictions}) {
               const style = getMarkerStyle(bestScore, maxScore)
               return(
                 <CircleMarker
-                      key={`${group.lat_centre}-${group.lon_centre}`}
-                      center={[group.lat_centre, group.lon_centre]}
-                      radius={style.radius}
-                      pathOptions={{color: style.color}}
-                    >
-                      <Popup>
-                        {group.species.map(s => (
-                          <div key={s.species}>
-                            <strong>{s.species}</strong>: seen on {formatLikelihood(s.likelihood_score)}% of {s.sample_checklists} visits here
-                          </div>
-                        ))}
-                        </Popup>
-                    </CircleMarker>
-                  )
-                })}
+                  key={`${group.lat_centre}-${group.lon_centre}`}
+                  center={[group.lat_centre, group.lon_centre]}
+                  radius={style.radius}
+                  pathOptions={{color: style.color}}
+                  eventHandlers={{click: (e) => {
+                    L.DomEvent.stopPropagation(e)
+                  }
+                }}
+              >
+                <Popup>
+                  {group.species.map(s => (
+                    <div key={s.species}>
+                      <strong>{s.species}</strong>: Likelihood {formatLikelihood(s.likelihood_score)}%
+                    </div>
+                  ))}
+                  <div className="mt-2">
+                    Based on: {group.species[0].sample_checklists} visits here
+                  </div>
+                  </Popup>
+              </CircleMarker>
+            )
+          })}
         </MapContainer>
       </div>
     </div>
