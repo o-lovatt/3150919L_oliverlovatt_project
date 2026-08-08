@@ -13,7 +13,12 @@ export function groupPredictionsByLocation(results) {
     }
 
     groups[key].species.push({species: item.species, likelihood_score: item.likelihood_score, sample_checklists: item.sample_checklists})
-
   })
-  return Object.values(groups)
+  //limit popup to only show top 5 most likely species in area, added after species list was increased
+  const allGroups = Object.values(groups)
+  allGroups.forEach(group => {
+    group.species.sort((a, b) => b.likelihood_score - a.likelihood_score)
+    group.species = group.species.slice(0, 5)
+  })
+return allGroups
 }
