@@ -20,23 +20,12 @@ I have reviewed, tested, and understood all AI-generated code.
 
 import sys
 import pandas as pd
+from constants import SHORTLIST
 
 # [STUDENT-WRITTEN]
 CHUNK_SIZE = 100_000
 
-#Golden Eagle, Western Capercaillie and corncrake dropped
-SHORTLIST = [
-    "Osprey",
-    "Common Cuckoo",
-    "Barn Swallow",
-    "Arctic Tern",
-    "Atlantic Puffin",
-    "Crested Tit",
-    "Rock Ptarmigan",
-    "Red Kite",
-    "White-tailed Eagle", #replaced Golden Eagle
-    "Red Grouse",
-]
+#moved to constants.py during refactoring
 
 COLUMNS_NEEDED = [
     "COMMON NAME",

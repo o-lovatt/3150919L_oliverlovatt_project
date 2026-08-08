@@ -15,45 +15,17 @@ I have reviewed, tested, and understood all AI-generated code.
 
 """
 
-import math
 import pandas as pd
 from django.core.management.base import BaseCommand
 from django.db import transaction
 from django.utils import timezone
 
 from predictions.models import Species, GridCell, Prediction, DatasetVersion
+from constants import (
+    LAT_BIN_SIZE, LON_BIN_SIZE, MIGRATORY_SPECIES, RESIDENT_SPECIES, SCIENTIFIC_NAMES,
+)
 
-# [STUDENT-WRITTEN]
-#match build_predictions
-CELL_KM = 15
-REFERENCE_LAT = 56.5
-KM_PER_DEG_LAT = 111.0
-KM_PER_DEG_LON = 111.0 * math.cos(math.radians(REFERENCE_LAT)) # [AI-GENERATED - Claude AI 23-07-2026]
-LAT_BIN_SIZE = CELL_KM / KM_PER_DEG_LAT
-LON_BIN_SIZE = CELL_KM / KM_PER_DEG_LON
-
-MIGRATORY_SPECIES = {
-    "Osprey", "Common Cuckoo", "Barn Swallow", "Arctic Tern", "Atlantic Puffin",
-}
-RESIDENT_SPECIES = {
-    "Crested Tit", "Rock Ptarmigan", "Red Kite", "Red Grouse", "White-tailed Eagle",
-}
-
-# [STUDENT-WRITTEN]
-#scientific names verified directly against the EBD file SCIENTIFIC NAME column 
-#Red Grouse differed from the common subspecies name
-SCIENTIFIC_NAMES = {
-    "Osprey": "Pandion haliaetus",
-    "Common Cuckoo": "Cuculus canorus",
-    "Barn Swallow": "Hirundo rustica",
-    "Arctic Tern": "Sterna paradisaea",
-    "Atlantic Puffin": "Fratercula arctica",
-    "Crested Tit": "Lophophanes cristatus",
-    "Rock Ptarmigan": "Lagopus muta",
-    "Red Kite": "Milvus milvus",
-    "Red Grouse": "Lagopus scotica",
-    "White-tailed Eagle": "Haliaeetus albicilla",
-}
+#moved to constants.py during refactoring
 
 # [STUDENT-WRITTEN]
 class Command(BaseCommand):

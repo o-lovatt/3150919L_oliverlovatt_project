@@ -25,22 +25,12 @@ import matplotlib
 # [AI-GENERATED - Claude AI 10-07-2026]
 matplotlib.use("Agg")  #no GUI needed, just save a png
 import matplotlib.pyplot as plt
+from constants import SHORTLIST
 
 # [STUDENT-WRITTEN]
 CHUNK_SIZE = 100_000
 
-SHORTLIST = [
-    "Osprey",
-    "Common Cuckoo",
-    "Barn Swallow",
-    "Arctic Tern",
-    "Atlantic Puffin",
-    "Crested Tit",
-    "Rock Ptarmigan",
-    "Red Kite",
-    "White-tailed Eagle",
-    "Red Grouse",
-]
+#moved to constants.py during refactoring
 
 COLUMNS_NEEDED = ["COMMON NAME", "LATITUDE", "LONGITUDE"]
 
@@ -126,7 +116,7 @@ def main(path):
     #create figure and axis
     fig, ax = plt.subplots(figsize = (9, 12))
     #get colour map --> 10 colours
-    cmap = plt.get_cmap("tab10")
+    cmap = plt.get_cmap("tab20") #updated incase i want to regenerate the map with the new added species
     #give position to pick colour
     for idx, species in enumerate(SHORTLIST):
         lat, lon = species_arrays[species]#unpack back to two separate variables

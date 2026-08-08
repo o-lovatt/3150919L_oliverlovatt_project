@@ -24,36 +24,17 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.calibration import CalibratedClassifierCV
 from sklearn.neighbors import NearestNeighbors
 from sklearn.metrics import roc_auc_score, brier_score_loss
+from constants import (
+    SHORTLIST, MAX_DURATION_MIN, MAX_DISTANCE_KM, MAX_OBSERVERS,
+    CELL_KM, REFERENCE_LAT, KM_PER_DEG_LAT, KM_PER_DEG_LON,
+    LAT_BIN_SIZE, LON_BIN_SIZE, MONTH_TO_SEASON, SEASONS,
+)
 
 # [STUDENT-WRITTEN]
 CHUNK_SIZE = 100_000
 RANDOM_SEED = 42  #fixed so the train/test split and RF training are reproducible 
 
-SHORTLIST = [
-    "Osprey",
-    "Common Cuckoo",
-    "Barn Swallow",
-    "Arctic Tern",
-    "Atlantic Puffin",
-    "Crested Tit",
-    "Rock Ptarmigan",
-    "Red Kite",
-    "White-tailed Eagle",
-    "Red Grouse",
-]
-
-#effort-standardization constants
-MAX_DURATION_MIN = 300
-MAX_DISTANCE_KM = 10
-MAX_OBSERVERS = 10
-
-#grid cell size
-CELL_KM = 15
-REFERENCE_LAT = 56.5
-KM_PER_DEG_LAT = 111.0
-KM_PER_DEG_LON = 111.0 * np.cos(np.radians(REFERENCE_LAT)) # [AI-GENERATED - Claude AI 18-07-2026]
-LAT_BIN_SIZE = CELL_KM / KM_PER_DEG_LAT
-LON_BIN_SIZE = CELL_KM / KM_PER_DEG_LON
+#moved to constants.py during refactoring
 
 #separate 20% of data for testing
 TEST_FRACTION = 0.2  
@@ -77,15 +58,7 @@ RF_PARAMS = dict(
     n_jobs = -1,
 )
 
-MONTH_TO_SEASON = {
-    12: "Winter", 1: "Winter", 2: "Winter",
-    3: "Spring", 4: "Spring", 5: "Spring",
-    6: "Summer", 7: "Summer", 8: "Summer",
-    9: "Autumn", 10: "Autumn", 11: "Autumn",
-}
-
-#use for converting season labels to 1/0
-SEASONS = ["Spring", "Summer", "Autumn", "Winter"]
+#moved to constants.py during refactoring
 
 CHECKLIST_COLS = [
     "SAMPLING EVENT IDENTIFIER",

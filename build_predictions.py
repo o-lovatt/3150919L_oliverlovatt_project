@@ -23,43 +23,15 @@ I have reviewed, tested, and understood all AI-generated code.
 import sys
 import pandas as pd
 import numpy as np
+from constants import (
+    SHORTLIST, MAX_DURATION_MIN, MAX_DISTANCE_KM, MAX_OBSERVERS,
+    CELL_KM, LAT_BIN_SIZE, LON_BIN_SIZE, MONTH_TO_SEASON,
+)
 
 # [STUDENT-WRITTEN]
 CHUNK_SIZE = 100_000
 
-SHORTLIST = [
-    "Osprey",
-    "Common Cuckoo",
-    "Barn Swallow",
-    "Arctic Tern",
-    "Atlantic Puffin",
-    "Crested Tit",
-    "Rock Ptarmigan",
-    "Red Kite",
-    "White-tailed Eagle",
-    "Red Grouse",
-]
-
-#effort-standardization constants
-MAX_DURATION_MIN = 300  #5 hours
-MAX_DISTANCE_KM = 10
-MAX_OBSERVERS = 10
-
-#grid cell size
-CELL_KM = 15
-REFERENCE_LAT = 56.5  #mid-Scotland latitude same as grid_resolution_check
-KM_PER_DEG_LAT = 111.0
-KM_PER_DEG_LON = 111.0 * np.cos(np.radians(REFERENCE_LAT)) # [AI-GENERATED - Claude AI 18-07-2026]
-LAT_BIN_SIZE = CELL_KM / KM_PER_DEG_LAT
-LON_BIN_SIZE = CELL_KM / KM_PER_DEG_LON
-
-
-MONTH_TO_SEASON = {
-    12: "Winter", 1: "Winter", 2: "Winter",
-    3: "Spring", 4: "Spring", 5: "Spring",
-    6: "Summer", 7: "Summer", 8: "Summer",
-    9: "Autumn", 10: "Autumn", 11: "Autumn",
-}
+#moved to constants.py during refactoring
 
 #two separate lists needed
 CHECKLIST_COLS = [
