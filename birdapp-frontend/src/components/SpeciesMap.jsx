@@ -49,28 +49,34 @@ function SpeciesMap({predictions}) {
   //create dropdown menu
   return (
     /* [AI-GENERATED - Claude AI 02-08-2026] */
-    <div>
-        <select onChange={(e) => setSelectedSpecies(e.target.value)}
+    <div className="h-full flex flex-col">
+      <div className="px-4 p-1">
+        <select
+          value={selectedSpecies || ""}
+          onChange={(e) => setSelectedSpecies(e.target.value)}
           className="px-4 py-2 rounded border border-bark bg-cream text-charcoal mb-4">
+          <option value="">--- Select a species ---</option>
           {speciesList.map(name => (
             <option key={name} value={name}>{name}</option>
           ))}
         </select>
-
+      
         {/* [STUDENT-WRITTEN] */}
-        <select onChange={(e) => setSelectedSeason(e.target.value)}
-          className="px-4 py-2 rounded border border-bark bg-cream test-charcoal mb-4">
+        <select
+          value={selectedSeason}
+          onChange={(e) => setSelectedSeason(e.target.value)}
+          className="px-4 py-2 rounded border border-bark bg-cream text-charcoal mb-4">
           {SEASONS.map(s => (
             <option key={s} value={s}>{s}</option>
           ))}
         </select>
-          
+
         <p className="text-charcoal">
           Showing results for {selectedSeason} ({SEASON_MONTHS[selectedSeason]})
         </p>
-          
+      </div> 
 
-        <div style={{ height: '100vh', width: '100%' }}>
+        <div className="flex-1">
                 <MapContainer center={SCOTLAND_CENTER} zoom={DEFAULT_ZOOM} style={{ height: '100%', width: '100%' }}>
                   <MapResizer />
                   <TileLayer

@@ -66,61 +66,61 @@ function LocationPredictions({predictions}) {
   
   return (
     /* [AI-GENERATED - Claude AI 02-08-2026] */
-    <div>
-      <div style={{ height: '100vh', width: '100%' }}>
+      <div className="h-full flex flex-col">
+        <div className="flex-1">
         <MapContainer center={[userLocation.lat, userLocation.lon]} zoom={9} style={{ height: '100%', width: '100%' }}>
           <LocationClickHandler onLocationSelect={setUserLocation} />
-          <MapResizer />
-          <TileLayer
-            url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
-            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
-          />
+            <MapResizer />
+            <TileLayer
+              url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
+              attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
+            />
 
-          {/* [STUDENT-WRITTEN] */}
-          <CircleMarker
-            center={[userLocation.lat, userLocation.lon]}
-            radius={6}
-            pathOptions={{ color: "red" }}
-            eventHandlers={{click: (e) => {
-              L.DomEvent.stopPropagation(e)
-            }
-          }}
-            >
-              <Popup>
-                Selected Location
-                </Popup>
-            </CircleMarker>
-
-            {grouped.map(group => {
-              const bestScore = Math.max(...group.species.map(s => s.likelihood_score))
-              const style = getMarkerStyle(bestScore, maxScore)
-              return(
-                <CircleMarker
-                  key={`${group.lat_centre}-${group.lon_centre}`}
-                  center={[group.lat_centre, group.lon_centre]}
-                  radius={style.radius}
-                  pathOptions={{color: style.color}}
-                  eventHandlers={{click: (e) => {
-                    L.DomEvent.stopPropagation(e)
-                  }
-                }}
+            {/* [STUDENT-WRITTEN] */}
+            <CircleMarker
+              center={[userLocation.lat, userLocation.lon]}
+              radius={6}
+              pathOptions={{ color: "red" }}
+              eventHandlers={{click: (e) => {
+                L.DomEvent.stopPropagation(e)
+              }
+            }}
               >
                 <Popup>
-                  {group.species.map(s => (
-                    <div key={s.species}>
-                      <strong>{s.species}</strong>: Likelihood {formatLikelihood(s.likelihood_score)}%
-                    </div>
-                  ))}
-                  <div className="mt-2">
-                    Based on: {group.species[0].sample_checklists} visits here
-                  </div>
+                  Selected Location
                   </Popup>
               </CircleMarker>
-            )
-          })}
-        </MapContainer>
+
+              {grouped.map(group => {
+                const bestScore = Math.max(...group.species.map(s => s.likelihood_score))
+                const style = getMarkerStyle(bestScore, maxScore)
+                return(
+                  <CircleMarker
+                    key={`${group.lat_centre}-${group.lon_centre}`}
+                    center={[group.lat_centre, group.lon_centre]}
+                    radius={style.radius}
+                    pathOptions={{color: style.color}}
+                    eventHandlers={{click: (e) => {
+                      L.DomEvent.stopPropagation(e)
+                    }
+                  }}
+                >
+                  <Popup>
+                    {group.species.map(s => (
+                      <div key={s.species}>
+                        <strong>{s.species}</strong>: Likelihood {formatLikelihood(s.likelihood_score)}%
+                      </div>
+                    ))}
+                    <div className="mt-2">
+                      Based on: {group.species[0].sample_checklists} visits here
+                    </div>
+                    </Popup>
+                </CircleMarker>
+              )
+            })}
+          </MapContainer>
+        </div>
       </div>
-    </div>
   )
 }
 

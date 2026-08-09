@@ -19,8 +19,8 @@ function App() {
 
   //navigation tabs
   return (
-    <div className="min-h-screen bg-cream p-4">
-      <div className="flex gap-1 mb-1">
+    <div className="h-screen bg-cream flex flex-col">
+      <div className="flex gap-1 px-4 pt-4 pb-2">
         <button onClick={() => setActiveTab("location")} 
         className={`px-4 py-2 rounded ${activeTab ==="location" ? "bg-forest text-cream" : "bg-cream text-charcoal border border-bark"}`}
         aria-label = "Find nearby birds in your location"
@@ -34,11 +34,13 @@ function App() {
           Species
         </button>
       </div>
-      {activeTab === "location" ? (
-        <LocationPredictions predictions = {predictions} />
-      ) : (
-      <SpeciesMap predictions = {predictions} />
-      )}
+      <div className="flex-1">
+        {activeTab === "location" ? (
+          <LocationPredictions predictions = {predictions} />
+        ) : (
+        <SpeciesMap predictions = {predictions} />
+        )}
+      </div>
     </div>
   )
 }
