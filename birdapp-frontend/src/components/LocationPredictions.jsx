@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { getPredictionsNearLocation } from '../utils/getPredictionsNearLocation'
 import { formatLikelihood } from '../utils/formatLikelihood'
 import { MapContainer, TileLayer, CircleMarker, Popup, useMapEvents } from 'react-leaflet'
@@ -22,11 +22,18 @@ function LocationClickHandler({ onLocationSelect }) {
 
 // [STUDENT-WRITTEN] - skeleton provided by Claude AI 30-07-2026
 //show the species location based on user location
-function LocationPredictions({predictions}) {
+function LocationPredictions({predictions, setSelectedSpecies}) {
   const [userLocation, setUserLocation] = useState(null)
   const [locationError, setLocationError] = useState(null)
+  const hasRequestedLocation = useRef(false)
 
+  //testing to see if this fixes the 'user denied geolocation prompt' message incorrecly showing
   useEffect(() => {
+    if (hasRequestedLocation.current){
+      return
+    }
+    hasRequestedLocation.current = true
+
     //call navigator.geolocation.getCurrentPosition()
     //build {lat, lon} from position.coords.latitude/longitude
     //pass to setLocation()
@@ -41,8 +48,10 @@ function LocationPredictions({predictions}) {
       },
       //on error pass error into setLocationError()
       (error) => {
+        console.log("error code:", error.code, error.message)
         setLocationError(error)
-      }
+      },
+      {timeout: 30000}
     )
   }, [])
  
@@ -108,7 +117,8 @@ function LocationPredictions({predictions}) {
                   <Popup>
                     {group.species.map(s => (
                       <div key={s.species}>
-                        <strong>{s.species}</strong>: Likelihood {formatLikelihood(s.likelihood_score)}%
+                        <strong onClick={() =>
+                          setSelectedSpecies(s.species)} className="cursor-pointer underline"> {s.species}</strong>: Likelihood {formatLikelihood(s.likelihood_score)}%
                       </div>
                     ))}
                     <div className="mt-2">

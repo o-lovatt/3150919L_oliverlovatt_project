@@ -15,8 +15,8 @@ const DEFAULT_ZOOM = 6
 // map resizer moved into it's own file MapResizer.jsx
 
 // [STUDENT-WRITTEN]
-function SpeciesMap({predictions}) {
-  const [selectedSpecies, setSelectedSpecies] = useState(null)
+function SpeciesMap({predictions, selectedSpecies, setSelectedSpecies}) {
+  //moved to app.jsx for the sidebar
 
   //season selection added for species view
   const [selectedSeason, setSelectedSeason] = useState(getCurrentSeason())
