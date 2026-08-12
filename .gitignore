@@ -7,3 +7,7 @@ __pycache__/
 .env
 db.sqlite3
 *.egg-info/
+
+birdapp_backend/localhost+2.pem
+birdapp_backend/localhost+2-key.pem
+birdapp_backend/*.pem

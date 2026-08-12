@@ -2,11 +2,13 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import { VitePWA } from 'vite-plugin-pwa'
 import tailwindcss from '@tailwindcss/vite'
+import mkcert from 'vite-plugin-mkcert'
 
 export default defineConfig({
   plugins: [
     react(),
     tailwindcss(),
+    mkcert(),
     VitePWA({
       registerType: 'autoUpdate',
       manifest: {
@@ -24,4 +26,8 @@ export default defineConfig({
       },
     }),
   ],
+  server: {
+          https: true,
+          host: true,
+  }
 })
