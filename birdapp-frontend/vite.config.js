@@ -8,6 +8,7 @@ export default defineConfig({
   plugins: [
     react(),
     tailwindcss(),
+    ...(process.env.HTTPS === 'true' ? [mkcert()] : []), //[AI-GENERATED - Claude AI 13-08-2026]
     mkcert(),
     VitePWA({
       registerType: 'autoUpdate',
@@ -27,7 +28,7 @@ export default defineConfig({
     }),
   ],
   server: {
-          https: true,
+          https: process.env.HTTPS === 'true', //[AI-GENERATED - Claude AI 13-08-2026]
           host: true,
   }
 })

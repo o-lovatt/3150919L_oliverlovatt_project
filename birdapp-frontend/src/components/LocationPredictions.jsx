@@ -7,6 +7,7 @@ import { getMarkerStyle } from '../utils/markerStyle'
 import { MapResizer } from './MapResizer'
 import { groupPredictionsByLocation } from '../utils/groupPredictionsByLocation'
 import L from 'leaflet'
+import RecentSightings from './RecentSightings'
 
 // [STUDENT-WRITTEN]
 //added functionality for user to click location on map
@@ -26,18 +27,14 @@ function LocationPredictions({predictions, setSelectedSpecies}) {
   const [userLocation, setUserLocation] = useState(null)
   const [locationError, setLocationError] = useState(null)
   const hasRequestedLocation = useRef(false)
+  const [showRecentSightings, setShowRecentSightings] = useState(true)
 
-  //testing to see if this fixes the 'user denied geolocation prompt' message incorrecly showing
-  useEffect(() => {
-    if (hasRequestedLocation.current){
-      return
-    }
-    hasRequestedLocation.current = true
-
+    //(requestLocation now separated from useEffect so it can be called)
     //call navigator.geolocation.getCurrentPosition()
     //build {lat, lon} from position.coords.latitude/longitude
     //pass to setLocation()
-    navigator.geolocation.getCurrentPosition( //should get GPS without needing data/wifi
+    function requestLocation(){
+      navigator.geolocation.getCurrentPosition( //should get GPS without needing data/wifi
       (position) => {
         const lat = position.coords.latitude
         const lon = position.coords.longitude
@@ -45,14 +42,23 @@ function LocationPredictions({predictions, setSelectedSpecies}) {
         const coord_pos = {lat, lon}
 
         setUserLocation(coord_pos)
+        setLocationError(null) //clear old error message when someone clicks try again
       },
       //on error pass error into setLocationError()
       (error) => {
-        console.log("error code:", error.code, error.message)
         setLocationError(error)
       },
       {timeout: 30000}
     )
+  }
+
+  //testing to see if this fixes the 'user denied geolocation prompt' message incorrecly showing
+  useEffect(() => {
+    if (hasRequestedLocation.current){
+      return
+    }
+    hasRequestedLocation.current = true
+    requestLocation()
   }, [])
  
 
@@ -74,8 +80,14 @@ function LocationPredictions({predictions, setSelectedSpecies}) {
   const maxScore = results.length > 0 ? Math.max(...results.map(item => item.likelihood_score)) : 0
   
   return (
-    /* [AI-GENERATED - Claude AI 02-08-2026] */
-      <div className="h-full flex flex-col">
+    /* [STUDENT-WRITTEN] */
+    <div className="h-full flex flex-col relative">
+      <button onClick={() => requestLocation()}
+        className="absolute top-4 right-4 z-[1000] px-3 py-2 rounded bg-forest text-cream shadow"
+        >
+        Recenter
+      </button>
+        {/* [AI-GENERATED - Claude AI 02-08-2026] */}
         <div className="flex-1">
         <MapContainer center={[userLocation.lat, userLocation.lon]} zoom={9} style={{ height: '100%', width: '100%' }}>
           <LocationClickHandler onLocationSelect={setUserLocation} />
@@ -130,6 +142,15 @@ function LocationPredictions({predictions, setSelectedSpecies}) {
             })}
           </MapContainer>
         </div>
+        <button
+          onClick={() => setShowRecentSightings(!showRecentSightings)}
+          className="px-4 py-2 mx-4 mt-2 mb-2 rounded bg-forest text-cream border border-bark"
+        >
+          {showRecentSightings ? "Hide" : "Show"} Recent Sightings
+        </button>
+        {showRecentSightings && (
+          <RecentSightings lat={userLocation.lat} lon={userLocation.lon} predictions={predictions} />
+        )}
       </div>
   )
 }

@@ -14,6 +14,8 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from .models import Prediction, DatasetVersion
 from .serializers import PredictionExportSerializer, DatasetVersionSerializer
+import requests
+import os
 
 # [AI-GENERATED - Claude AI 23-07-2026]
 #GET /api/version/
@@ -37,3 +39,22 @@ class PredictionExportView(APIView):
         predictions = Prediction.objects.select_related("species", "grid_cell").all()
         serializer = PredictionExportSerializer(predictions, many = True)
         return Response(serializer.data)
+
+# [STUDENT WRITTEN]
+# get lat#lon from incoming request 
+#build parameter dict
+#build headers dict
+EBIRD_RECENT_URL = "https://api.ebird.org/v2/data/obs/geo/recent"
+class RecentSightingsView(APIView):
+    def get(self, request):
+        lat = request.GET.get("lat")
+        lon = request.GET.get("lon")
+
+        params_dict = {"lat": lat, "lng": lon, "back": 7} #(7 days to look back at)
+        headers_dict = {"X-eBirdApiToken": os.getenv("EBIRD_API_KEY")}
+
+        response = requests.get(EBIRD_RECENT_URL, params=params_dict, headers=headers_dict)
+
+        if response.status_code != 200:
+            return Response({"error": "Could not fetch recent sightings"}, status=502)
+        return Response(response.json())
