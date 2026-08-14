@@ -27,7 +27,7 @@ function LocationPredictions({predictions, setSelectedSpecies}) {
   const [userLocation, setUserLocation] = useState(null)
   const [locationError, setLocationError] = useState(null)
   const hasRequestedLocation = useRef(false)
-  const [showRecentSightings, setShowRecentSightings] = useState(true)
+  const [showRecentSightings, setShowRecentSightings] = useState(false)
 
     //(requestLocation now separated from useEffect so it can be called)
     //call navigator.geolocation.getCurrentPosition()

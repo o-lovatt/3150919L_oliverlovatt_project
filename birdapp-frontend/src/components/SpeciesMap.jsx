@@ -8,6 +8,8 @@ import { getMarkerStyle } from '../utils/markerStyle'
 import { MapResizer } from './MapResizer'
 import { formatLikelihood } from '../utils/formatLikelihood'
 import { getCurrentSeason, getSeason } from '../utils/season'
+import { fetchSpeciesRecentSightings } from '../services/api'
+import { SPECIES_CODES } from '../utils/speciesCodes'
 
 const SCOTLAND_CENTER = [56.5, -4.0] //Scotlands centre point (roughly)
 const DEFAULT_ZOOM = 6
@@ -45,6 +47,38 @@ function SpeciesMap({predictions, selectedSpecies, setSelectedSpecies}) {
   // formatLikelihood moved int it's own file formatLikelihood.js
 
   //getMarkerStyle moved into it's own file markerStyle.js
+
+
+  //fetch live sightings from eBird for species selected
+  //the main prediction layer should keep working if this breaks
+  //don't show an error, just make the array empty
+  const [liveSightings, setLiveSightings] = useState([])
+  const [showLiveSightings, setShowLiveSightings] = useState(true)
+
+  useEffect(() => {
+    //if !selectedspecies call setLiveSightings
+    //look up species code
+    //call async fetchSpeciesRecentSightings
+    const code = SPECIES_CODES[selectedSpecies]
+
+    if (!selectedSpecies){
+      setLiveSightings([])
+      return
+    }
+
+    async function loadLiveSightings(){
+      try {
+      const data = await fetchSpeciesRecentSightings(code)
+      setLiveSightings(data)
+    } catch (err) {
+      setLiveSightings([])
+    }
+  }
+  
+  loadLiveSightings()
+
+  }, [selectedSpecies])
+
  
   //create dropdown menu
   return (
@@ -60,6 +94,8 @@ function SpeciesMap({predictions, selectedSpecies, setSelectedSpecies}) {
             <option key={name} value={name}>{name}</option>
           ))}
         </select>
+
+
       
         {/* [STUDENT-WRITTEN] */}
         <select
@@ -74,6 +110,14 @@ function SpeciesMap({predictions, selectedSpecies, setSelectedSpecies}) {
         <p className="text-charcoal">
           Showing results for {selectedSeason} ({SEASON_MONTHS[selectedSeason]})
         </p>
+
+        <button
+          onClick={() => setShowLiveSightings(!showLiveSightings)}
+          className="px-4 py-2 rounded bg-forest text-cream : bg-cream text-charcoal mt-4 mb-4"
+        >
+          {showLiveSightings ? "Hide" : "Show"} Live Sightings
+        </button>
+
       </div> 
 
         <div className="flex-1">
@@ -104,6 +148,22 @@ function SpeciesMap({predictions, selectedSpecies, setSelectedSpecies}) {
                           </CircleMarker>
                         )
                       })}
+
+                      {showLiveSightings && liveSightings.map(sighting => {
+                        return (
+                          <CircleMarker
+                            key={sighting.subId}
+                            center={[sighting.lat, sighting.lng]}
+                            radius={6}
+                            pathOptions={{color:"#e53e3e"}}
+                          >
+                            <Popup>{sighting.locName}
+                              <br />
+                              {sighting.obsDt}
+                            </Popup>
+                          </CircleMarker>
+                        )
+                        })}
                 </MapContainer>
               </div>
             </div>

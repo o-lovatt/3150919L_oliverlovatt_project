@@ -1,0 +1,26 @@
+// [STUDENT WRITTEN]
+//this has created more deduplication :/ look into fix if there's time later
+export const SPECIES_CODES = {
+  "Osprey": "osprey",
+  "Common Cuckoo": "comcuc",
+  "Barn Swallow": "barswa",
+  "Arctic Tern": "arcter",
+  "Atlantic Puffin": "atlpuf",
+  "Crested Tit": "cretit2",
+  "Rock Ptarmigan": "rocpta1",
+  "Red Kite": "redkit1",
+  "White-tailed Eagle": "whteag",
+  "Red Grouse": "wilpta1",
+  "Willow Warbler": "wlwwar",
+  "Black Guillemot": "blkgui",
+  "Eurasian Curlew": "eurcur",
+  "White-throated Dipper": "whtdip1",
+  "Common Kingfisher": "comkin1",
+  "Long-tailed Tit": "lottit1",
+  "European Golden-Plover": "eugplo",
+  "Short-eared Owl": "sheowl",
+  "Common Wood-Pigeon": "cowpig1",
+  "Manx Shearwater": "manshe",
+  "Snow Bunting": "snobun",
+  "Northern Gannet": "norgan",
+}

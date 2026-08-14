@@ -19,3 +19,9 @@ export async function fetchRecentSightings(lat, lon){
     const sighting_data = await sightings.json();
     return sighting_data;
 }
+
+export async function fetchSpeciesRecentSightings(speciesCode){
+    const species_sightings = await fetch(`${API_BASE_URL}/species-recent-sightings/?species_code=${speciesCode}`);
+    const species_sighting_data = await species_sightings.json();
+    return species_sighting_data
+}

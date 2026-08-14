@@ -41,7 +41,7 @@ class PredictionExportView(APIView):
         return Response(serializer.data)
 
 # [STUDENT WRITTEN]
-# get lat#lon from incoming request 
+#get lat/lon from incoming request 
 #build parameter dict
 #build headers dict
 EBIRD_RECENT_URL = "https://api.ebird.org/v2/data/obs/geo/recent"
@@ -57,4 +57,18 @@ class RecentSightingsView(APIView):
 
         if response.status_code != 200:
             return Response({"error": "Could not fetch recent sightings"}, status=502)
+        return Response(response.json())
+
+# [STUDENT WRITTEN]
+class SpeciesRecentSightingsView(APIView):
+    def get(self, request):
+        species_code = request.GET.get("species_code")
+        url = f"https://api.ebird.org/v2/data/obs/GB-SCT/recent/{species_code}"
+        headers = {"X-eBirdApiToken": os.getenv("EBIRD_API_KEY")}
+
+        response = requests.get(url, headers=headers)
+
+        if response.status_code != 200:
+            return Response({"error": "Could not fetch species sightings"}, status=502)
+
         return Response(response.json())
