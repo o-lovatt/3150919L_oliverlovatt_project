@@ -53,7 +53,7 @@ function SpeciesMap({predictions, selectedSpecies, setSelectedSpecies}) {
   //the main prediction layer should keep working if this breaks
   //don't show an error, just make the array empty
   const [liveSightings, setLiveSightings] = useState([])
-  const [showLiveSightings, setShowLiveSightings] = useState(true)
+  const [showLiveSightings, setShowLiveSightings] = useState(false)
 
   useEffect(() => {
     //if !selectedspecies call setLiveSightings
