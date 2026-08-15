@@ -88,7 +88,7 @@ function LocationPredictions({predictions, setSelectedSpecies}) {
         Recenter
       </button>
         {/* [AI-GENERATED - Claude AI 02-08-2026] */}
-        <div className="flex-1">
+        <div className="flex-1 min-h-[300px]">
         <MapContainer center={[userLocation.lat, userLocation.lon]} zoom={9} style={{ height: '100%', width: '100%' }}>
           <LocationClickHandler onLocationSelect={setUserLocation} />
             <MapResizer />

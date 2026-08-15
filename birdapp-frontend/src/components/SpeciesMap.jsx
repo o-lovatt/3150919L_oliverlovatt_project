@@ -120,7 +120,7 @@ function SpeciesMap({predictions, selectedSpecies, setSelectedSpecies}) {
 
       </div> 
 
-        <div className="flex-1">
+        <div className="flex-1 min-h-[300px]">
                 <MapContainer center={SCOTLAND_CENTER} zoom={DEFAULT_ZOOM} style={{ height: '100%', width: '100%' }}>
                   <MapResizer />
                   <TileLayer

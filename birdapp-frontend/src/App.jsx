@@ -23,7 +23,7 @@ function App() {
 
   //navigation tabs
   return (
-    <div className="h-screen bg-cream flex">
+    <div className="h-screen bg-cream flex flex-col md:flex-row overflow-y-auto">
       <div className="flex-1 flex flex-col">
         <div className="flex gap-1 px-4 pt-4 pb-2">
           <button onClick={() => {
@@ -58,7 +58,7 @@ function App() {
 
       {/* only render sidebar when selecteSpecies has a value*/}
         {selectedSpecies && (
-          <div className="w-80 border border-bark">
+          <div className="w-full md:w-80 bg-cream">
             <SpeciesInfoPanel speciesName={selectedSpecies}/>
           </div>
         )}
