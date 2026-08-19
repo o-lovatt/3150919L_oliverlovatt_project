@@ -8,6 +8,7 @@ import { MapResizer } from './MapResizer'
 import { groupPredictionsByLocation } from '../utils/groupPredictionsByLocation'
 import L from 'leaflet'
 import RecentSightings from './RecentSightings'
+import { useOnlineStatus } from '../hooks/useOnlineStatus'
 
 // [STUDENT-WRITTEN]
 //added functionality for user to click location on map
@@ -28,12 +29,17 @@ function LocationPredictions({predictions, setSelectedSpecies}) {
   const [locationError, setLocationError] = useState(null)
   const hasRequestedLocation = useRef(false)
   const [showRecentSightings, setShowRecentSightings] = useState(false)
+  const isOnline = useOnlineStatus()
+
+  //added to show loading when fetching gps coords
+  const [isLocating, setIsLocating] = useState(false)
 
     //(requestLocation now separated from useEffect so it can be called)
     //call navigator.geolocation.getCurrentPosition()
     //build {lat, lon} from position.coords.latitude/longitude
     //pass to setLocation()
     function requestLocation(){
+      setIsLocating(true)
       navigator.geolocation.getCurrentPosition( //should get GPS without needing data/wifi
       (position) => {
         const lat = position.coords.latitude
@@ -43,10 +49,12 @@ function LocationPredictions({predictions, setSelectedSpecies}) {
 
         setUserLocation(coord_pos)
         setLocationError(null) //clear old error message when someone clicks try again
+        setIsLocating(false)
       },
       //on error pass error into setLocationError()
       (error) => {
         setLocationError(error)
+        setIsLocating(false)
       },
       {timeout: 30000}
     )
@@ -85,10 +93,11 @@ function LocationPredictions({predictions, setSelectedSpecies}) {
       <button onClick={() => requestLocation()}
         className="absolute top-4 right-4 z-[1000] px-3 py-2 rounded bg-forest text-cream shadow"
         >
-        Recenter
+        {isLocating ? "Locating..." : "Recenter"}
       </button>
-        {/* [AI-GENERATED - Claude AI 02-08-2026] */}
+      {isOnline ? (
         <div className="flex-1 min-h-[300px]">
+        {/* [AI-GENERATED - Claude AI 02-08-2026] */}
         <MapContainer center={[userLocation.lat, userLocation.lon]} zoom={9} style={{ height: '100%', width: '100%' }}>
           <LocationClickHandler onLocationSelect={setUserLocation} />
             <MapResizer />
@@ -142,16 +151,35 @@ function LocationPredictions({predictions, setSelectedSpecies}) {
             })}
           </MapContainer>
         </div>
-        <button
-          onClick={() => setShowRecentSightings(!showRecentSightings)}
-          className="px-4 py-2 mx-4 mt-2 mb-2 rounded bg-forest text-cream border border-bark"
-        >
-          {showRecentSightings ? "Hide" : "Show"} Recent Sightings
-        </button>
-        {showRecentSightings && (
-          <RecentSightings lat={userLocation.lat} lon={userLocation.lon} predictions={predictions} />
-        )}
-      </div>
+      ) : (
+        <div className="flex-1 min-h-[300px] p-4 overflow-y-auto">
+          <p className="text-charcoal font-bold mb-2">You're Offline - showing predictions as a list:</p>
+           {grouped.map(group => (
+            <div key={`${group.lat_centre}-${group.lon_centre}`} className="bg-cream border border-bark rounded p-2 mb-2">
+              <p className="text-charcoal text-sm opacity-75">Near {group.lat_centre.toFixed(2)}, {group.lon_centre.toFixed(2)}</p>
+              {group.species.map(s => (
+                <p key={s.species} className="text-charcoal">
+                  <strong>{s.species}</strong>: {formatLikelihood(s.likelihood_score)}%
+                </p>
+              ))}
+            </div>
+          ))}
+        </div>
+      )}
+      {isOnline && (
+        <>
+          <button
+            onClick={() => setShowRecentSightings(!showRecentSightings)}
+            className="px-4 py-2 mx-4 mt-2 mb-2 rounded bg-forest text-cream border border-bark"
+          >
+            {showRecentSightings ? "Hide" : "Show"} Recent Sightings
+          </button>
+          {showRecentSightings && (
+            <RecentSightings lat={userLocation.lat} lon={userLocation.lon} predictions={predictions} />
+          )}
+        </>
+      )}
+    </div>
   )
 }
 

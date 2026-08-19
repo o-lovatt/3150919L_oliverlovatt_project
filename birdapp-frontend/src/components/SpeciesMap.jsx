@@ -10,6 +10,7 @@ import { formatLikelihood } from '../utils/formatLikelihood'
 import { getCurrentSeason, getSeason } from '../utils/season'
 import { fetchSpeciesRecentSightings } from '../services/api'
 import { SPECIES_CODES } from '../utils/speciesCodes'
+import { useOnlineStatus } from '../hooks/useOnlineStatus'
 
 const SCOTLAND_CENTER = [56.5, -4.0] //Scotlands centre point (roughly)
 const DEFAULT_ZOOM = 6
@@ -19,6 +20,8 @@ const DEFAULT_ZOOM = 6
 // [STUDENT-WRITTEN]
 function SpeciesMap({predictions, selectedSpecies, setSelectedSpecies}) {
   //moved to app.jsx for the sidebar
+
+  const isOnline = useOnlineStatus()
 
   //season selection added for species view
   const [selectedSeason, setSelectedSeason] = useState(getCurrentSeason())
@@ -111,15 +114,17 @@ function SpeciesMap({predictions, selectedSpecies, setSelectedSpecies}) {
           Showing results for {selectedSeason} ({SEASON_MONTHS[selectedSeason]})
         </p>
 
+      {isOnline && (
         <button
           onClick={() => setShowLiveSightings(!showLiveSightings)}
           className="px-4 py-2 rounded bg-forest text-cream : bg-cream text-charcoal mt-4 mb-4"
         >
           {showLiveSightings ? "Hide" : "Show"} Live Sightings
         </button>
+      )}
 
       </div> 
-
+        {isOnline ? (
         <div className="flex-1 min-h-[300px]">
                 <MapContainer center={SCOTLAND_CENTER} zoom={DEFAULT_ZOOM} style={{ height: '100%', width: '100%' }}>
                   <MapResizer />
@@ -166,6 +171,19 @@ function SpeciesMap({predictions, selectedSpecies, setSelectedSpecies}) {
                         })}
                 </MapContainer>
               </div>
+            ) : (
+              <div className="flex-1 min-h-[300px] p-4 overflow-y-auto">
+                <p className="text-charcoal font-bold mb-2">You're offline — showing predictions as a list:</p>
+                {results.map(item => (
+                  <div key={`${item.lat_centre}-${item.lon_centre}`} className="bg-cream border border-bark rounded p-2 mb-2">
+                    <p className="text-charcoal text-sm opacity-75">Near {item.lat_centre.toFixed(2)}, {item.lon_centre.toFixed(2)}</p>
+                    <p className="text-charcoal">
+                      <strong>{item.species}</strong>: {formatLikelihood(item.likelihood_score)}%
+                    </p>
+                  </div>
+                ))}
+              </div>
+            )}
             </div>
           )
         }

@@ -7,8 +7,8 @@ const HIGH_COLOR = {r: 15, g: 82, b: 186} //vibrant
 export function getMarkerStyle(score, maxScore) {
 //how far is score from maxScore
 //what if maxScore = 0 ?
-const colour_t = score
-const radius_t = maxScore > 0 ? score / maxScore : 0
+const colour_t = maxScore > 0 ? score / maxScore : 0
+//(reverted back to old size/vibrancy calculation, prefered how this looked)
 
 
 //interpolate each colour channel with t
@@ -22,7 +22,7 @@ const color = `rgb(${red}, ${green}, ${blue})`
 //scale radius using t aswell
 const minRadius = 4
 const maxRadius = 10
-const radius = Math.round(minRadius + radius_t * (maxRadius - minRadius))
+const radius = Math.round(minRadius + colour_t * (maxRadius - minRadius))
 
 return {radius: radius, color: color, weight: 2}
 }

@@ -14,3 +14,4 @@ db.sqlite3
 birdapp_backend/localhost+2.pem
 birdapp_backend/localhost+2-key.pem
 birdapp_backend/*.pem
+atlas_open_data_files/
