@@ -13,7 +13,7 @@ import { SPECIES_CODES } from '../utils/speciesCodes'
 import { useOnlineStatus } from '../hooks/useOnlineStatus'
 
 const SCOTLAND_CENTER = [56.5, -4.0] //Scotlands centre point (roughly)
-const DEFAULT_ZOOM = 6
+const DEFAULT_ZOOM = 7
 
 // map resizer moved into it's own file MapResizer.jsx
 
