@@ -1,6 +1,6 @@
 //[STUDENT-WRITTEN]
 
-const API_BASE_URL = `${window.location.protocol}//${window.location.hostname}:8000/api`; //prob need to change this later when deployed
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || `${window.location.protocol}//${window.location.hostname}:8000/api`;
 
 export async function fetchVersion() {
     const response = await fetch(`${API_BASE_URL}/version/`);
