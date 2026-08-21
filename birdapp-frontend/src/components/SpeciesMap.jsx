@@ -13,7 +13,7 @@ import { SPECIES_CODES } from '../utils/speciesCodes'
 import { useOnlineStatus } from '../hooks/useOnlineStatus'
 
 const SCOTLAND_CENTER = [56.5, -4.0] //Scotlands centre point (roughly)
-const DEFAULT_ZOOM = 7
+const DEFAULT_ZOOM = 6
 
 // map resizer moved into it's own file MapResizer.jsx
 
@@ -87,43 +87,43 @@ function SpeciesMap({predictions, selectedSpecies, setSelectedSpecies}) {
   return (
     /* [AI-GENERATED - Claude AI 02-08-2026] */
     <div className="h-full flex flex-col">
-      <div className="px-4 p-1">
+      <div className="flex flex-wrap gap-1 mb-1">
         <select
           value={selectedSpecies || ""}
           onChange={(e) => setSelectedSpecies(e.target.value)}
-          className="px-4 py-2 rounded border border-bark bg-cream text-charcoal mb-4">
+          className="px-2 py-2 rounded border border-bark bg-cream text-charcoal text-sm ml-4">
           <option value="">--- Select a species ---</option>
           {speciesList.map(name => (
             <option key={name} value={name}>{name}</option>
           ))}
         </select>
-
-
       
         {/* [STUDENT-WRITTEN] */}
-        <select
-          value={selectedSeason}
-          onChange={(e) => setSelectedSeason(e.target.value)}
-          className="px-4 py-2 rounded border border-bark bg-cream text-charcoal mb-4">
-          {SEASONS.map(s => (
-            <option key={s} value={s}>{s}</option>
-          ))}
-        </select>
+          <select
+            value={selectedSeason}
+            onChange={(e) => setSelectedSeason(e.target.value)}
+            className="px-2 py-2 rounded border border-bark bg-cream text-charcoal text-sm">
+            {SEASONS.map(s => (
+              <option key={s} value={s}>{s}</option>
+            ))}
+          </select>
+        </div>
 
-        <p className="text-charcoal">
-          Showing results for {selectedSeason} ({SEASON_MONTHS[selectedSeason]})
-        </p>
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between ml-4 mr-2">
+          <p className="text-charcoal text-xs mb-2 md:mb-0">
+            Showing results for {selectedSeason} ({SEASON_MONTHS[selectedSeason]})
+          </p>
 
-      {isOnline && (
-        <button
-          onClick={() => setShowLiveSightings(!showLiveSightings)}
-          className="px-4 py-2 rounded bg-forest text-cream : bg-cream text-charcoal mt-4 mb-4"
-        >
-          {showLiveSightings ? "Hide" : "Show"} Live Sightings
-        </button>
-      )}
+          {isOnline && (
+            <button
+              onClick={() => setShowLiveSightings(!showLiveSightings)}
+              className="px-3 py-1 rounded text-sm bg-forest text-cream mb-2"
+            >
+              {showLiveSightings ? "Hide" : "Show"} Live Sightings
+            </button>
+          )}
+          </div>
 
-      </div> 
         {isOnline ? (
         <div className="flex-1 min-h-[300px]">
                 <MapContainer center={SCOTLAND_CENTER} zoom={DEFAULT_ZOOM} style={{ height: '100%', width: '100%' }}>

@@ -1,7 +1,6 @@
 *.txt
 !README.md
 __pycache__/
-*.png
 */settings.py
 *.pyc
 .env
