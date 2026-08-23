@@ -9,6 +9,7 @@ import { groupPredictionsByLocation } from '../utils/groupPredictionsByLocation'
 import L from 'leaflet'
 import RecentSightings from './RecentSightings'
 import { useOnlineStatus } from '../hooks/useOnlineStatus'
+import { useGeolocation } from '../hooks/useGeolocation'
 
 // [STUDENT-WRITTEN]
 //added functionality for user to click location on map
@@ -25,50 +26,11 @@ function LocationClickHandler({ onLocationSelect }) {
 // [STUDENT-WRITTEN] - skeleton provided by Claude AI 30-07-2026
 //show the species location based on user location
 function LocationPredictions({predictions, setSelectedSpecies}) {
-  const [userLocation, setUserLocation] = useState(null)
-  const [locationError, setLocationError] = useState(null)
-  const hasRequestedLocation = useRef(false)
   const [showRecentSightings, setShowRecentSightings] = useState(false)
   const isOnline = useOnlineStatus()
 
-  //added to show loading when fetching gps coords
-  const [isLocating, setIsLocating] = useState(false)
-
-    //(requestLocation now separated from useEffect so it can be called)
-    //call navigator.geolocation.getCurrentPosition()
-    //build {lat, lon} from position.coords.latitude/longitude
-    //pass to setLocation()
-    function requestLocation(){
-      setIsLocating(true)
-      navigator.geolocation.getCurrentPosition( //should get GPS without needing data/wifi
-      (position) => {
-        const lat = position.coords.latitude
-        const lon = position.coords.longitude
-
-        const coord_pos = {lat, lon}
-
-        setUserLocation(coord_pos)
-        setLocationError(null) //clear old error message when someone clicks try again
-        setIsLocating(false)
-      },
-      //on error pass error into setLocationError()
-      (error) => {
-        setLocationError(error)
-        setIsLocating(false)
-      },
-      {timeout: 30000}
-    )
-  }
-
-  //testing to see if this fixes the 'user denied geolocation prompt' message incorrecly showing
-  useEffect(() => {
-    if (hasRequestedLocation.current){
-      return
-    }
-    hasRequestedLocation.current = true
-    requestLocation()
-  }, [])
- 
+  //requestLocation now moved to useGeolocation
+  const { userLocation, locationError, isLocating, requestLocation, setUserLocation } = useGeolocation()
 
   //show location unavailable message if error 
   //show loading if waiting for location and predictions

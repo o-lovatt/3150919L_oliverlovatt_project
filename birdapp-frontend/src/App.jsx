@@ -1,22 +1,18 @@
 import { useState } from 'react'
-import reactLogo from './assets/react.svg' //will need these later
-import viteLogo from './assets/vite.svg' //will need these later
-import heroImg from './assets/hero.png' //might need this later??
 import './App.css'
-import { useEffect } from 'react';
 import { usePredictions } from './hooks/usePredictions'
-import { getPredictionsForLocation } from './utils/getPredictionsForLocation'
 import LocationPredictions from './components/LocationPredictions'
 import SpeciesMap from './components/SpeciesMap'
 import SpeciesInfoPanel from './components/SpeciesInfoPanel'
+import HomePage from './components/HomePage'
 
 // [STUDENT-WRITTEN]
 function App() {
   //refactored, now only called once
   const { predictions, loading } = usePredictions()
 
-  //track with view is active
-  const [activeTab, setActiveTab] = useState("location")
+  //track which view is active
+  const [activeTab, setActiveTab] = useState("home")
 
   //for sidebar
   const [selectedSpecies, setSelectedSpecies] = useState(null)
@@ -25,7 +21,15 @@ function App() {
   return (
     <div className="h-dvh bg-cream flex flex-col md:flex-row overflow-y-auto">
       <div className="flex-1 flex flex-col">
+        {activeTab !== "home" && (
         <div className="flex gap-1 px-4 pt-4 pb-2">
+          <button onClick={() => setActiveTab("home")}
+          className={`px-4 py-2 rounded ${activeTab ==="home" ? "bg-forest text-cream" : "bg-cream text-charcoal border border-bark"}`}
+          aria-label = "Go to Homepage"
+          >
+            Home
+          </button>
+
           <button onClick={() => {
             setActiveTab("location")
             setSelectedSpecies(null)
@@ -35,6 +39,7 @@ function App() {
           >
             Location
           </button>
+
           <button onClick={() => setActiveTab("species")}
           className={`px-4 py-2 rounded ${activeTab ==="species" ? "bg-forest text-cream" : "bg-cream text-charcoal border border-bark"}`}
           aria-label = "Find sighting locations based on a specific species"
@@ -42,9 +47,12 @@ function App() {
             Species
           </button>
         </div>
+        )}
 
         <div className="flex-1">
-          {activeTab === "location" ? (
+          {activeTab === "home" ? (
+            <HomePage predictions={predictions} setActiveTab={setActiveTab} setSelectedSpecies={setSelectedSpecies}/>
+          ) : activeTab === "location" ? (
             <LocationPredictions predictions = {predictions} setSelectedSpecies = {setSelectedSpecies}/>
           ) : (
           <SpeciesMap
