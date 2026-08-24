@@ -23,7 +23,10 @@ function App() {
       <div className="flex-1 flex flex-col">
         {activeTab !== "home" && (
         <div className="flex gap-1 px-4 pt-4 pb-2">
-          <button onClick={() => setActiveTab("home")}
+          <button onClick={() => {
+            setSelectedSpecies(null)
+            setActiveTab("home")
+          }}
           className={`px-4 py-2 rounded ${activeTab ==="home" ? "bg-forest text-cream" : "bg-cream text-charcoal border border-bark"}`}
           aria-label = "Go to Homepage"
           >
@@ -40,7 +43,13 @@ function App() {
             Location
           </button>
 
-          <button onClick={() => setActiveTab("species")}
+          <button onClick={() => {
+            //stop the info bar persisiting between view from hompage/species
+            if (activeTab === "home") {
+              setSelectedSpecies(null)
+            }
+            setActiveTab("species")
+          }}
           className={`px-4 py-2 rounded ${activeTab ==="species" ? "bg-forest text-cream" : "bg-cream text-charcoal border border-bark"}`}
           aria-label = "Find sighting locations based on a specific species"
           >

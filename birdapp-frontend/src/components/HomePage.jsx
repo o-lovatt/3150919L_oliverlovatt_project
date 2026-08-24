@@ -91,12 +91,18 @@ function HomePage({ predictions, setActiveTab, setSelectedSpecies }) {
 
             <div className="flex flex-col sm:flex-row gap-3">
                 <button
-                    onClick={() => setActiveTab("location")}
+                    onClick={() => {
+                        setSelectedSpecies(null)
+                        setActiveTab("location")
+                    }}
                     className="flex-1 px-4 py-3 rounded bg-forest text-cream font-semibold">
                         Find Birds Near Me
                 </button>
                 <button
-                    onClick={() => setActiveTab("species")}
+                    onClick={() => {
+                        setSelectedSpecies(null)
+                        setActiveTab("species")
+                    }}
                     className="flex-1 px-4 py-3 rounded bg-forest text-cream font-semibold">
                         Search By Species
                 </button>

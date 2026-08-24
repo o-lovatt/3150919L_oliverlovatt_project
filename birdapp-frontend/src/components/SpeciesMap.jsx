@@ -83,12 +83,12 @@ function SpeciesMap({predictions, selectedSpecies, setSelectedSpecies}) {
   }, [selectedSpecies])
 
  
-  //create dropdown menu
   return (
     /* [AI-GENERATED - Claude AI 02-08-2026] */
     <div className="h-full flex flex-col">
       <div className="flex flex-wrap gap-1 mb-1">
         <select
+          //create dropdown menu
           value={selectedSpecies || ""}
           onChange={(e) => setSelectedSpecies(e.target.value)}
           className="px-2 py-2 rounded border border-bark bg-cream text-charcoal text-sm ml-4">

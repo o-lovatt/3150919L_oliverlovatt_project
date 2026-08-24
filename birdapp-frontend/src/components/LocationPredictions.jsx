@@ -7,9 +7,10 @@ import { getMarkerStyle } from '../utils/markerStyle'
 import { MapResizer } from './MapResizer'
 import { groupPredictionsByLocation } from '../utils/groupPredictionsByLocation'
 import L from 'leaflet'
-import RecentSightings from './RecentSightings'
 import { useOnlineStatus } from '../hooks/useOnlineStatus'
 import { useGeolocation } from '../hooks/useGeolocation'
+import { useRecentSightings } from '../hooks/useRecentSightings'
+import { groupSightingsByLocation } from '../utils/groupSightingsByLocation'
 
 // [STUDENT-WRITTEN]
 //added functionality for user to click location on map
@@ -32,6 +33,18 @@ function LocationPredictions({predictions, setSelectedSpecies}) {
   //requestLocation now moved to useGeolocation
   const { userLocation, locationError, isLocating, requestLocation, setUserLocation } = useGeolocation()
 
+  //useRecentSightings needs userLocation
+  //what if user location is null?
+  //get hook to handle undefined lat/lon vars
+  const { sightings: recentSightings, error: recentSightingsError } = useRecentSightings(
+    userLocation?.lat,
+    userLocation?.lon,
+    predictions
+  )
+
+  //guard if recentSightings is null
+  const groupedSightings = recentSightings ? groupSightingsByLocation(recentSightings) : []
+
   //show location unavailable message if error 
   //show loading if waiting for location and predictions
   //else show results
@@ -53,10 +66,22 @@ function LocationPredictions({predictions, setSelectedSpecies}) {
     /* [STUDENT-WRITTEN] */
     <div className="h-full flex flex-col relative">
       <button onClick={() => requestLocation()}
-        className="absolute top-4 right-4 z-[1000] px-3 py-2 rounded bg-forest text-cream shadow"
+        className="absolute top-12 right-4 z-[1000] px-3 py-2 rounded bg-forest text-cream shadow"
         >
         {isLocating ? "Locating..." : "Recenter"}
       </button>
+
+      <div className="flex flex-col md:flex-row md:justify-end mx-4 mb-2">
+        {isOnline && (
+          <button
+            onClick={() => setShowRecentSightings(!showRecentSightings)}
+            className="w-full md:w-auto px-3 py-1 text-sm rounded bg-forest text-cream"
+          >
+            {showRecentSightings ? "Hide" : "Show"} Live Sightings
+          </button>
+        )}
+      </div>
+
       {isOnline ? (
         <div className="flex-1 min-h-[300px]">
         {/* [AI-GENERATED - Claude AI 02-08-2026] */}
@@ -70,9 +95,10 @@ function LocationPredictions({predictions, setSelectedSpecies}) {
 
             {/* [STUDENT-WRITTEN] */}
             <CircleMarker
+              //user location marker
               center={[userLocation.lat, userLocation.lon]}
               radius={6}
-              pathOptions={{ color: "red" }}
+              pathOptions={{ color: "green" }}
               eventHandlers={{click: (e) => {
                 L.DomEvent.stopPropagation(e)
               }
@@ -111,6 +137,38 @@ function LocationPredictions({predictions, setSelectedSpecies}) {
                 </CircleMarker>
               )
             })}
+              
+            {showRecentSightings && groupedSightings.map(group => (
+              //new block to show recent sightings as circle markers (same as species view)
+                <CircleMarker
+                  key={`${group.lat}-${group.lng}`}
+                  center={[group.lat, group.lng]}
+                  radius={6}
+                  pathOptions={{ color: "#e53e3e" }}
+                >
+                  <Popup>
+                    {group.sightings.map(s => (
+                      //edited to group sightings from the same checklist into one circle marker
+                      <div key={s.subId}>
+                        <strong
+                          onClick={() => setSelectedSpecies(s.comName)}
+                          className='cursor-pointer underline'
+                          >
+                          {/* comName is optional, added diplay for when missing this value*/}
+                          {s.comName}
+                        </strong>
+                        : {s.howMany ? `${s.howMany} seen` : "seen"}
+                      </div>
+                    ))}
+                    <div className="mt-2 text-xs opacity-75">
+                      {group.locName}
+                      <br />
+                      {group.sightings[0].obsDt}
+                    </div>
+                  </Popup>
+                </CircleMarker>
+              ))}
+
           </MapContainer>
         </div>
       ) : (
@@ -127,19 +185,6 @@ function LocationPredictions({predictions, setSelectedSpecies}) {
             </div>
           ))}
         </div>
-      )}
-      {isOnline && (
-        <>
-          <button
-            onClick={() => setShowRecentSightings(!showRecentSightings)}
-            className="px-4 py-2 mx-4 mt-2 mb-2 rounded bg-forest text-cream border border-bark"
-          >
-            {showRecentSightings ? "Hide" : "Show"} Recent Sightings
-          </button>
-          {showRecentSightings && (
-            <RecentSightings lat={userLocation.lat} lon={userLocation.lon} predictions={predictions} />
-          )}
-        </>
       )}
     </div>
   )

@@ -8,6 +8,7 @@ export function groupPredictionsByLocation(results) {
   results.forEach(item => {
     const key = `${item.lat_centre}-${item.lon_centre}`
 
+    //if groups[key] doesn't exist create it
     if (!groups[key]){
       groups[key] = {lat_centre: item.lat_centre, lon_centre: item.lon_centre, species: []}
     }
