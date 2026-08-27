@@ -11,7 +11,7 @@ export function getLocationsForSpecies(predicitons, speciesName, season){
     matching.sort((a, b) => b.likelihood_score - a.likelihood_score)
     //keep only the top 20
     //updated to fifty to test wether the fronend looks cluttered on common species
-    const topResults = matching.slice(0, 50)
+    const topResults = matching
     //return the sorted filtered array
     return topResults;
 }

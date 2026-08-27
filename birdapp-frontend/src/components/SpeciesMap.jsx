@@ -117,9 +117,9 @@ function SpeciesMap({predictions, selectedSpecies, setSelectedSpecies}) {
           {isOnline && (
             <button
               onClick={() => setShowLiveSightings(!showLiveSightings)}
-              className="px-3 py-1 rounded text-sm bg-forest text-cream mb-2"
+              className={`w-full md:w-auto px-3 py-1 text-sm rounded mb-2 border ${showLiveSightings ? "bg-forest text-cream border-forest" : "bg-cream text-charcoal border-bark"}`}
             >
-              {showLiveSightings ? "Hide" : "Show"} Live Sightings
+              Live Sightings: {showLiveSightings ? "ON" : "OFF"}
             </button>
           )}
           </div>
@@ -159,7 +159,7 @@ function SpeciesMap({predictions, selectedSpecies, setSelectedSpecies}) {
                           <CircleMarker
                             key={sighting.subId}
                             center={[sighting.lat, sighting.lng]}
-                            radius={6}
+                            radius={8}
                             pathOptions={{color:"#e53e3e"}}
                           >
                             <Popup>{sighting.locName}

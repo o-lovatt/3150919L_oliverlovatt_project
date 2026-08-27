@@ -20,8 +20,8 @@ const blue = Math.round(LOW_COLOR.b + colour_t * (HIGH_COLOR.b - LOW_COLOR.b))
 const color = `rgb(${red}, ${green}, ${blue})`
 
 //scale radius using t aswell
-const minRadius = 4
-const maxRadius = 10
+const minRadius = 6
+const maxRadius = 12
 const radius = Math.round(minRadius + colour_t * (maxRadius - minRadius))
 
 return {radius: radius, color: color, weight: 2}

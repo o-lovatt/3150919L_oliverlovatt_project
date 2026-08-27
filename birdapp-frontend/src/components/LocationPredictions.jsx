@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { getPredictionsNearLocation } from '../utils/getPredictionsNearLocation'
 import { formatLikelihood } from '../utils/formatLikelihood'
-import { MapContainer, TileLayer, CircleMarker, Popup, useMapEvents } from 'react-leaflet'
+import { MapContainer, TileLayer, CircleMarker, Popup, useMapEvents, useMap } from 'react-leaflet'
 import 'leaflet/dist/leaflet.css'
 import { getMarkerStyle } from '../utils/markerStyle'
 import { MapResizer } from './MapResizer'
@@ -14,13 +14,28 @@ import { groupSightingsByLocation } from '../utils/groupSightingsByLocation'
 
 // [STUDENT-WRITTEN]
 //added functionality for user to click location on map
-function LocationClickHandler({ onLocationSelect }) {
+//turn this into a toggle, useability issue fix after user evals
+function LocationClickHandler({ onLocationSelect, allowLocationSelect }) {
   useMapEvents({
     click(e) {
-      const clickedLocation = {lat: e.latlng.lat, lon: e.latlng.lng}
-      onLocationSelect(clickedLocation)
+      if (allowLocationSelect) {
+        const clickedLocation = {lat: e.latlng.lat, lon: e.latlng.lng}
+        onLocationSelect(clickedLocation)
+      }
     },
   })
+  return null
+}
+
+// [STUDENT-WRITTEN]
+//gly the camera back to the users location when they click recenter 
+function MapRecenter({ lat, lon }) {
+  const map = useMap()
+
+  useEffect(() => {
+    map.flyTo([lat, lon], map.getZoom())
+  }, [lat, lon])
+
   return null
 }
 
@@ -28,6 +43,7 @@ function LocationClickHandler({ onLocationSelect }) {
 //show the species location based on user location
 function LocationPredictions({predictions, setSelectedSpecies}) {
   const [showRecentSightings, setShowRecentSightings] = useState(false)
+  const [allowLocationSelect, setAllowLocationSelect] = useState(false)
   const isOnline = useOnlineStatus()
 
   //requestLocation now moved to useGeolocation
@@ -61,33 +77,41 @@ function LocationPredictions({predictions, setSelectedSpecies}) {
   const grouped = groupPredictionsByLocation(results)
 
   const maxScore = results.length > 0 ? Math.max(...results.map(item => item.likelihood_score)) : 0
-  
+
   return (
     /* [STUDENT-WRITTEN] */
     <div className="h-full flex flex-col relative">
-      <button onClick={() => requestLocation()}
-        className="absolute top-12 right-4 z-[1000] px-3 py-2 rounded bg-forest text-cream shadow"
-        >
-        {isLocating ? "Locating..." : "Recenter"}
-      </button>
-
-      <div className="flex flex-col md:flex-row md:justify-end mx-4 mb-2">
+      <div className="flex flex-col md:flex-row md:justify-end mx-4 mb-1">
+          {isOnline && (
+            <button onClick={() => setAllowLocationSelect(!allowLocationSelect)}
+            className={`w-full md:w-auto px-3 py-1 text-sm rounded mr-1 mb-1 border ${allowLocationSelect ? "bg-forest text-cream border-forest" : "bg-cream text-charcoal border-bark"}`}
+            >
+              Set Location: {allowLocationSelect ? "ON" : "OFF"}
+            </button>
+          )}
+          
         {isOnline && (
           <button
             onClick={() => setShowRecentSightings(!showRecentSightings)}
-            className="w-full md:w-auto px-3 py-1 text-sm rounded bg-forest text-cream"
+            className={`w-full md:w-auto px-3 py-1 text-sm rounded mr-1 mb-1 border ${showRecentSightings ? "bg-forest text-cream border-forest" : "bg-cream text-charcoal border-bark"}`}
           >
-            {showRecentSightings ? "Hide" : "Show"} Live Sightings
+             Live Sightings: {showRecentSightings ? "ON" : "OFF"}
           </button>
         )}
+        <button onClick={() => requestLocation()}
+          className="w-full md:w-auto px-3 py-1 text-sm rounded mb-1 bg-forest text-cream"
+        >
+          {isLocating ? "Locating..." : "Recenter"}
+        </button>
       </div>
 
       {isOnline ? (
         <div className="flex-1 min-h-[300px]">
         {/* [AI-GENERATED - Claude AI 02-08-2026] */}
         <MapContainer center={[userLocation.lat, userLocation.lon]} zoom={9} style={{ height: '100%', width: '100%' }}>
-          <LocationClickHandler onLocationSelect={setUserLocation} />
+          <LocationClickHandler onLocationSelect={setUserLocation} allowLocationSelect={allowLocationSelect}/>
             <MapResizer />
+            <MapRecenter lat={userLocation.lat} lon={userLocation.lon} />
             <TileLayer
               url={`https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png?key=${import.meta.env.VITE_CARTO_KEY}`}
               attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
@@ -143,7 +167,7 @@ function LocationPredictions({predictions, setSelectedSpecies}) {
                 <CircleMarker
                   key={`${group.lat}-${group.lng}`}
                   center={[group.lat, group.lng]}
-                  radius={6}
+                  radius={8}
                   pathOptions={{ color: "#e53e3e" }}
                 >
                   <Popup>
