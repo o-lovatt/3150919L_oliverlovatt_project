@@ -30,6 +30,8 @@ from constants import (
     LAT_BIN_SIZE, LON_BIN_SIZE, MONTH_TO_SEASON, SEASONS,
 )
 
+from distance_features import add_distance_features
+
 # [STUDENT-WRITTEN]
 CHUNK_SIZE = 100_000
 RANDOM_SEED = 42  #fixed so the train/test split and RF training are reproducible 
@@ -237,12 +239,15 @@ def make_spatial_split(qualifying):
 # [STUDENT-WRITTEN]
 #builds the dataframe for random forest predictor values
 def build_features(df):
+    df = add_distance_features(df) #adds DIST_TO_COAT and DIST_TO_CITY
     features = pd.DataFrame({
         "LATITUDE": df["LATITUDE"],
         "LONGITUDE": df["LONGITUDE"],
         "DURATION MINUTES": df["DURATION MINUTES"],
         "EFFORT DISTANCE KM": df["EFFORT DISTANCE KM"],
         "NUMBER OBSERVERS": df["NUMBER OBSERVERS"],
+        "DIST_TO_COAST_KM": df["DIST_TO_COAST_KM"],
+        "DIST_TO_CITY_KM": df["DIST_TO_CITY_KM"],
     })
     #SEASONS variable from earlier use here
     #create one column per possible season

@@ -1,0 +1,3 @@
+features,auc_mean,auc_ci,brier_mean,brier_ci
+baseline,0.8013,"[0.7973, 0.8049]",0.1067,"[0.1054, 0.1080]"
+baseline + distance,0.8114,"[0.8078, 0.8154]",0.1046,"[0.1033, 0.1059]"
